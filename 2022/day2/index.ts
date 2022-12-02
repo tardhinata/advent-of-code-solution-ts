@@ -36,68 +36,35 @@ class Day2 extends AdventOfCode {
 		this.result = parseInt(fs.readFileSync(resultPath, 'utf8').trim());
 	}
 
+	private getNormalGameResult(vs: Hand, me: Hand): Result | undefined {
+		if (vs === me) {
+			return Result.DRAW;
+		}
+		if (me === Hand.ROCK) {
+			return vs === Hand.SCISSOR ? Result.WIN : Result.LOSE;
+		} else if (me === Hand.PAPER) {
+			return vs === Hand.ROCK ? Result.WIN : Result.LOSE;
+		} else if (me === Hand.SCISSOR) {
+			return vs === Hand.PAPER ? Result.WIN : Result.LOSE;
+		}
+	}
+
 	protected part1(): number {
-		let score = 0;
-		this.input.forEach(game => {
-			if (game.vs === Hand.ROCK) {
-				if (game.me === Hand.ROCK) {
-					score += Result.DRAW + game.me;
-				} else if (game.me === Hand.PAPER) {
-					score += Result.WIN + game.me;
-				} else if (game.me === Hand.SCISSOR) {
-					score += Result.LOSE + game.me;
-				}
-			} else if (game.vs === Hand.PAPER) {
-				if (game.me === Hand.ROCK) {
-					score += Result.LOSE + game.me;
-				} else if (game.me === Hand.PAPER) {
-					score += Result.DRAW + game.me;
-				} else if (game.me === Hand.SCISSOR) {
-					score += Result.WIN + game.me;
-				}
-			} else if (game.vs === Hand.SCISSOR) {
-				if (game.me === Hand.ROCK) {
-					score += Result.WIN + game.me;
-				} else if (game.me === Hand.PAPER) {
-					score += Result.LOSE + game.me;
-				} else if (game.me === Hand.SCISSOR) {
-					score += Result.DRAW + game.me;
-				}
-			}
-		});
-		return score;
+		return this.input.reduce((acc, game) => {
+			return acc + this.getNormalGameResult(game.vs, game.me) + game.me;
+		}, 0);
 	}
 
 	protected part2(): number {
-		let score = 0;
-		this.input.forEach(game => {
-			if (game.vs === Hand.ROCK) {
-				if (game.me === Hand.ROCK) {
-					score += Result.LOSE + Hand.SCISSOR;
-				} else if (game.me === Hand.PAPER) {
-					score += Result.DRAW + Hand.ROCK;
-				} else if (game.me === Hand.SCISSOR) {
-					score += Result.WIN + Hand.PAPER;
-				}
-			} else if (game.vs === Hand.PAPER) {
-				if (game.me === Hand.ROCK) {
-					score += Result.LOSE + Hand.ROCK;
-				} else if (game.me === Hand.PAPER) {
-					score += Result.DRAW + Hand.PAPER;
-				} else if (game.me === Hand.SCISSOR) {
-					score += Result.WIN + Hand.SCISSOR;
-				}
-			} else if (game.vs === Hand.SCISSOR) {
-				if (game.me === Hand.ROCK) {
-					score += Result.LOSE + Hand.PAPER;
-				} else if (game.me === Hand.PAPER) {
-					score += Result.DRAW + Hand.SCISSOR;
-				} else if (game.me === Hand.SCISSOR) {
-					score += Result.WIN + Hand.ROCK;
-				}
+		return this.input.reduce((acc, game) => {
+			if (game.me === Hand.ROCK) {
+				return acc + Result.LOSE + (game.vs === Hand.ROCK ? Hand.SCISSOR : game.vs === Hand.PAPER ? Hand.ROCK : Hand.PAPER);
+			} else if (game.me === Hand.PAPER) {
+				return acc + Result.DRAW + game.vs;
+			} else if (game.me === Hand.SCISSOR) {
+				return acc + Result.WIN + (game.vs === Hand.ROCK ? Hand.PAPER : game.vs === Hand.PAPER ? Hand.SCISSOR : Hand.ROCK);
 			}
-		});
-		return score;
+		}, 0);
 	}
 }
 
