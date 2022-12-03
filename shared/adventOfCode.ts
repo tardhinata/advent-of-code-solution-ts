@@ -1,6 +1,6 @@
 
 export abstract class AdventOfCode {
-  protected abstract input: Array<Array<string | number>>;
+  protected abstract input: Array<Array<string | number | Array<string | number>>>;
   protected abstract result: string | number;
   /**
    * Process the input files.
