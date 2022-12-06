@@ -1,5 +1,5 @@
 /**
- * Solution for https://adventofcode.com/2022/day/5
+ * Solution for https://adventofcode.com/2022/day/6
  */
 
 import fs from 'fs';
